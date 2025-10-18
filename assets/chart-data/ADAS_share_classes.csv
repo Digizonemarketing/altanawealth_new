@@ -1,0 +1,13 @@
+﻿Fund Class,Description,Min initial Investment,ISIN,SEDOL,Bloomberg Ticker
+A USD,Institutional /Non-distributing,$100000,IE00BDD95873,BDD9587,ALTDASA ID
+B EUR,Institutional / Non-distributing,€100000,IE00BDD95980,BDD9598,
+C GBP,Institutional / Non-distributing,£100000,IE00BDD95B04,BDD95B0,ALTDACG ID
+D USD,Institutional / Distributing,$100000,IE00BDD95C11,BDD95C1,
+E EUR,Institutional / Distributing,€100000,IE00BDD95D28,BDD95D2,
+F GBP,Institutional / Distributing,£100000,IE00BDD95F42,BDD95F4,
+G USD,Retail / Non-distributing,No Minimum,IE00BDD95G58,BDD95G5,
+H EUR,Retail / Non-distributing,No Minimum,IE00BDD95H65,BDD95H6,
+I GBP,Retail / Non-distributing,No Minimum,IE00BDD95J89,BDD95J8,ALTDAIG ID
+J USD,Retail / Distributing,No Minimum,IE00BDD95K94,BDD95K9,
+K EUR,Retail / Distributing,No Minimum,IE00BDD95L02,BDD95L0,
+L GBP,Retail / Distributing,No Minimum,IE00BDD95M19,BDD95M1,
