@@ -1,47 +1,60 @@
+document.addEventListener("DOMContentLoaded", function() {
+  const pathName = window.location.pathname;
+  if (pathName === "/" || pathName === "") return;
 
-(function(){
-  var parts = window.location.pathname.replace(/\/$/, "").split("/").filter(Boolean);
-  var built = "";
-  var html = '<nav class="breadcrumb"><a href="/">Home</a>';
+  const breadcrumbContainer = document.createElement("nav");
+  breadcrumbContainer.className = "breadcrumbs";
 
-  for (var i = 0; i < parts.length; i++) {
-    var p = parts[i];
+  let segments = pathName.split("/").filter(Boolean);
 
-    // Skip pure numbers (dates in blog URLs)
-    if (/^\d+$/.test(p)) continue;
+  // Remove date-like segments (year / month / day)
+  segments = segments.filter(seg => !/^\d{4}$/.test(seg) && !/^\d{1,2}$/.test(seg));
 
-    built += "/" + p;
-    var label = decodeURIComponent(p)
+  let html = `<a href="/">Home</a>`;
+  let list = [];
+  list.push({
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": window.location.origin + "/"
+  });
+
+  let cumulative = "";
+  let pos = 2;
+
+  segments.forEach((seg, idx) => {
+    cumulative += "/" + seg;
+    const name = seg
       .replace(/-/g, " ")
-      .replace(/\b\w/g, function(m){ return m.toUpperCase(); });
+      .replace(/&/g, " & ")
+      .replace(/\b\w/g, l => l.toUpperCase());
 
-    html += ' <span class="sep">→</span> <a href="' + built + '">' + label + '</a>';
-  }
-
-  html += '</nav>';
-  document.write(html);
-
-  // JSON-LD Breadcrumb Schema
-  var temp = document.createElement("div");
-  temp.innerHTML = html;
-  var links = temp.querySelectorAll("a");
-
-  if (links.length > 1) {
-    var schema = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": []
-    };
-
-    for (var j = 0; j < links.length; j++) {
-      schema.itemListElement.push({
-        "@type": "ListItem",
-        "position": j + 1,
-        "name": links[j].textContent.trim(),
-        "item": links[j].href
-      });
+    if (idx === segments.length - 1) {
+      html += ` <span>›</span> <span class="current">${name}</span>`;
+    } else {
+      html += ` <span>›</span> <a href="${cumulative}/">${name}</a>`;
     }
 
-    document.write('<script type="application/ld+json">' + JSON.stringify(schema) + '<\/script>');
-  }
-})();
+    list.push({
+      "@type": "ListItem",
+      "position": pos++,
+      "name": name,
+      "item": window.location.origin + cumulative + "/"
+    });
+  });
+
+  breadcrumbContainer.innerHTML = html;
+
+  const insertPoint = document.querySelector("main, .Main, #page");
+  if (insertPoint) insertPoint.prepend(breadcrumbContainer);
+
+  // Schema Injection
+  const schemaScript = document.createElement("script");
+  schemaScript.type = "application/ld+json";
+  schemaScript.text = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": list
+  });
+  document.head.appendChild(schemaScript);
+});
